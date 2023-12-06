@@ -16,7 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from social import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("linksphere/register",views.SignUpView.as_view(),name="signup"),
+    path("linksphere/signin",views.SigninView.as_view(),name="signin"),
+    path("linksphere/index",views.IndexView.as_view(),name="index"),
+    path("linksphere/signout",views.SignoutView.as_view(),name="signout"),
+    path("linksphere/profile-edit/<int:pk>/change",views.ProfileUpdateView.as_view(),name="profile-update"),
 ]
