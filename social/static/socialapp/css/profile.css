@@ -121,3 +121,11 @@ mark {
 .dark-color {
     color: #20247b;
 }
+.cropped { 
+    width: 562px; 
+    height: 562px; 
+    overflow: hidden; 
+  }
+.cropped img { 
+    margin: 100px 0px 0px 5px;
+  }

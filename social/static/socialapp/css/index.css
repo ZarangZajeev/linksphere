@@ -12,11 +12,14 @@ body{
 }
 .profile-small{
     width:40px;
+    height: 40px;
     border-radius: 50%;
     background-color: rgb(68, 68, 68);
 }
 .profile-xsmall{
-    width:20px;
+    width: 20px;
+    height: 20px;
+    margin: 20px 0px 20px 0px;
     border-radius: 50%;
     background-color: rgb(68, 68, 68);
 }
@@ -30,4 +33,33 @@ body{
 
 .btn-group .btn-img{
     margin-right: 7em;
+}
+form .input .upload img{
+    width: 20px;
+    height: auto;
+}
+.load{
+    display:none
+}
+.upload{
+  height: 100%;
+  width: 100%;
+  border-radius: 6px;
+  border: 2px dashed #888383;
+}
+
+.upload:hover{
+  color: #890082;
+  border: 2px dashed #890082;
+}
+.post{
+  width: 40%;
+  background-color: #f0f1f2;
+}
+.date{
+  font-size: 10px;
+}
+.elsepost{
+  font-family: 'Archivo Black', sans-serif;
+  font-weight: 900;
 }

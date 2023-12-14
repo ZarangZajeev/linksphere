@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from social import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,4 +27,9 @@ urlpatterns = [
     path("linksphere/index",views.IndexView.as_view(),name="index"),
     path("linksphere/signout",views.SignoutView.as_view(),name="signout"),
     path("linksphere/profile-edit/<int:pk>/change",views.ProfileUpdateView.as_view(),name="profile-update"),
-]
+    path("linksphere/<int:pk>",views.ProfileDetailView.as_view(),name="profile"),
+    path("linksphere/all",views.ProfileListView.as_view(),name="profile-list"),
+    path("linksphere/profile/<int:pk>/follow",views.FollowView.as_view(),name="follow"),
+    path("linksphere/<int:pk>/like",views.PostLikeView.as_view(),name="like"),
+    path("linksphere/post/<int:pk>/comment/add",views.CommentView.as_view(),name="comment"),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
