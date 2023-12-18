@@ -1,8 +1,10 @@
+from typing import Any
+from django.db.models.query import QuerySet
 from django.forms.models import BaseModelForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import View, FormView, CreateView, TemplateView, UpdateView, DetailView,ListView
-from social.form import RegistrationForm, LoginForm, UserProfileForm,PostForm,CommentForm
+from social.form import RegistrationForm, LoginForm, UserProfileForm,PostForm,CommentForm,StoryForm
 from django.urls import reverse
 from django.contrib.auth import authenticate,login,logout
 from social.models import UserProfile,Posts,Comments
@@ -67,6 +69,14 @@ class IndexView(CreateView,ListView):
     
     def get_success_url(self):
         return reverse("index")
+    
+    def get_queryset(self):
+        blocked_profiles=self.request.user.profile.block.all()
+        blockedprofile_id=[pr.user.id for pr in blocked_profiles]
+        print(blockedprofile_id)
+        qs=Posts.objects.all().exclude(user__id__in=blockedprofile_id).order_by("-created_date")
+        return qs
+    
 
 # @method_decorator(signin_required,name="dispatch")
 class SignoutView(View):
@@ -141,3 +151,23 @@ class CommentView(CreateView,ListView):
         form.instance.user=self.request.user
         form.instance.post=post_object
         return super().form_valid(form)
+    
+class ProfileBlockView(View):
+    def post(self,request,*args,**kwargs):
+        id=kwargs.get("pk")
+        profile_object=UserProfile.objects.get(id=id)
+        action=request.POST.get("action")
+        if action=="block":
+            request.user.profile.block.add(profile_object)
+        elif action=="unblock":
+            request.user.profile.block.remove(profile_object)
+        return redirect("index")
+
+class StoryCreateView(View):
+    def post(self,request,*args,**kwargs):
+        form=StoryForm(request.POST,files=request.FILES)
+        if form.is_valid():
+            form.instance.user=request.user
+            form.save()
+            return redirect("index")
+        return redirect("index")

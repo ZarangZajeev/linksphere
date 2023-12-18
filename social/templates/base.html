@@ -39,7 +39,13 @@
             </div>
         <!-- search end -->
 
-            <i class="fa-regular fa-square-plus btn  me-2 fs-3 text-white opacity-75"></i>
+        <!--=========== modal start=============== -->
+            <button class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <i class="fa-regular fa-square-plus me-2 fs-3 text-white opacity-75"></i>
+            </button>
+
+              
+        <!--=========== modal end ===============-->
 
         <!-- profile dropdown start -->
 
@@ -73,6 +79,31 @@
         </div>
     </nav>
     <!-- nav ends -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 fw-bold" id="exampleModalLabel">Add Story</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{%url 'story_create'%}" method="post" enctype="multipart/form-data">
+                    {%csrf_token%}
+                    <div class="modal-body">
+                        <div>
+                            <input type="text" class="form-control" name="title" id="" placeholder="Caption">
+                        </div>
+                        <div class="mt-4">
+                            <input type="file" class="form-control" name="post_image" id="">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+      
     {%block body_block%}
 
     {%endblock%}

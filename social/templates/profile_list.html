@@ -3,47 +3,44 @@
 {%block body_block%}
 <link rel="stylesheet" href="{%static 'socialapp/css/profile_list.css'%}">
 <div class="container pro-li-top">
-        <div class="row">
-            {%for profile in data%}
+  <div class="row">
+    {%for profile in data%}
             <div class="col-3">
-                <div class="card mt-2 shadow" style="width: 18rem;">
-                    {%if profile.profile_pic%}
-                        <img src="{{profile.profile_pic.url}}" class="card-img-top" alt="" height="250px">
-                    {%else%}
-                        <img src="{%static 'socialapp/images/profilepic.png'%}" alt="">
-                    {%endif%}
-                    <div class="card-body">
-                        <h5 class="card-title"><a href="{%url 'profile' profile.id%}" class="text-decoration-none">{{profile}}</a></h5>
-                        <p class="card-text">
-                          <div>
-                              bio:{{profile.bio}}
-                          </div>
-                         <div>
-                          email:{{profile.user.email}}
-                         </div>
-                        </p>
-                      </div>
-                      <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                         <span class="fw-bold text-primary"> {{profile.following.count}}</span> followings
-                         <span class="fw-bold text-info">  {{profile.followed_by.count}}</span> followers </li>
-                      </ul>
-                      <div class="card-body">
-                        <form action="{%url 'follow' profile.id%}" method="post">
-                          {%csrf_token%}
-                          {%if profile in request.user.profile.following.all%}
-                            <button class="btn btn-danger" type="submit" name="action" value="unfollow">Unfollow</button>
-                          {%else%}
-                            <button class="btn btn-primary" type="submit" name="action" value="follow">Follow</button>
-                          {%endif%}
-                        </form>
-                      </div>
-                    </div>
+              <div class="card mt-2 shadow profile" style="width: 18rem;">
+                {%if profile.profile_pic%}
+                    <img src="{{profile.profile_pic.url}}" class="card-img-top crop-image" alt="">
+                {%else%}
+                    <img src="{%static 'socialapp/images/profilepic.png'%}" class="crop-image" alt="">
+                {%endif%}
+                <div class="card-body">
+                  <h5 class="card-title"><a href="{%url 'profile' profile.id%}" class="text-decoration-none">{{profile}}</a></h5>
+                  <p class="card-text">
+                <div>
+                    bio:{{profile.bio}}
               </div>
-  
-          {%endfor%}
-  
+              <div>
+                email:{{profile.user.email}}
+              </div>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+              <span class="fw-bold text-primary"> {{profile.following.count}}</span> followings
+              <span class="fw-bold text-info">  {{profile.followed_by.count}}</span> followers </li>
+            </ul>
+            <form action="{%url 'follow' profile.id%}" method="post">
+                <div class="card-body">
+                  {%csrf_token%}
+                  {%if profile in request.user.profile.following.all%}
+                    <button class="btn btn-danger" type="submit" name="action" value="unfollow">Unfollow</button>
+                  {%else%}
+                    <button class="btn btn-primary" type="submit" name="action" value="follow">Follow</button>
+                  {%endif%}
+            </form>
+            </div>
         </div>
+      </div>
+    {%endfor%}
+  </div>
 </div>
 {%endblock%}
 

@@ -7,7 +7,7 @@
             <div class="row align-items-center flex-row-reverse mt-0">
                 <div class="col-lg-6">
                     <div class="about-text go-to">
-                        <h3 class="dark-color">{{data}}</h3>
+                        <h3 class="fw-bolder dark-color user-name">{{data}}</h3>
                         {%if data.user == request.user%}
                             <a class="btn" href="{%url 'profile-update' request.user.profile.id%}">Edit profile</a>
                         {%endif%}
@@ -33,14 +33,21 @@
                                 </div>
                                 <div class="col-md-6 mt-3">
                                 {%if data.user != request.user%}
-                                
-                                    <!-- {%if profile in request.user.profile.following.all%}
-                                        <button class="btn btn-danger" type="submit" name="action" value="unfollow">Unfollow</button>
-                                    {%else%}
-                                        <button class="btn btn-primary" type="submit" name="action" value="follow">Follow</button>
-                                    {%endif%} -->
-                                    <button class="btn btn-success">Follow</button>
-                                    <button class="btn btn-danger">Block</button>
+                                <div class="d-flex ">
+                                    <div>
+                                        <button class="btn btn-success">Follow</button>
+                                    </div>
+                                    <div>
+                                    <form action="{%url 'block' data.id%}" method="post">
+                                        {%csrf_token%}
+                                        {%if data in request.user.profile.block.all%}
+                                            <button name="action" value="unblock" class="btn btn-secondary ms-3">Unblock</button>
+                                        {%else%}
+                                            <button name="action" value="block" class="btn btn-danger ms-3">Block</button>
+                                        {%endif%}
+                                    </form>
+                                    </div>
+                                </div>
                                 {%endif%}
                                 </div>
                             </div>
@@ -51,14 +58,15 @@
                 <div class="col-lg-6">
                     <div class="about-avatar mb-2 cropped">
                         {%if data.profile_pic%}
-                            <img src="{{data.profile_pic.url}}" alt="" class="">
+                            <img class="crop-image" src="{{data.profile_pic.url}}" alt="" class="">
                         {%else%}
-                        <img src="{%static 'socialapp/images/profilepic.png'%}" alt="">
+                            <img class="crop-image" src="{%static 'socialapp/images/profilepic.png'%}" alt="">
                         {%endif%}
                     </div>
                 </div>
             </div>
             <div class="counter">
+                {%if data.user == request.user%}
                 <div class="row">
                     <div class="col-6 col-lg-3">
                         <div class="count-data text-center">
@@ -85,6 +93,29 @@
                         </div>
                     </div>
                 </div>
+                {%else%}
+                <div class="row">
+                    <div class="col-6 col-lg-4">
+                        <div class="count-data text-center">
+                            <h6 class="count h2" data-to="500" data-speed="500">{{data.following.count}}</h6>
+                            <p class="m-0px font-w-600">Following</p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-4">
+                        <div class="count-data text-center">
+                            <h6 class="count h2" data-to="150" data-speed="150">{{data.followed_by.count}}</h6>
+                            <p class="m-0px font-w-600">Follower</p>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-lg-4">
+                        <div class="count-data text-center">
+                            <h6 class="count h2" data-to="190" data-speed="190">{{data.user.userpost.all.count}}</h6>
+                            <p class="m-0px font-w-600">Posts</p>
+                        </div>
+                    </div>
+                </div>
+                {%endif%}
             </div>
         </div>
     </section>

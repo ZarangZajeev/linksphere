@@ -121,11 +121,18 @@ mark {
 .dark-color {
     color: #20247b;
 }
-.cropped { 
-    width: 562px; 
-    height: 562px; 
-    overflow: hidden; 
-  }
-.cropped img { 
-    margin: 100px 0px 0px 5px;
-  }
+
+.about-avatar img{
+  width: 33em;
+  height: 33em;
+  overflow: hidden; 
+  border-radius: 50%;
+}
+.crop-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.about-text h3{
+  font-family: 'Archivo Black', sans-serif;
+}

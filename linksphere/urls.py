@@ -23,7 +23,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("linksphere/register",views.SignUpView.as_view(),name="signup"),
-    path("linksphere/signin",views.SigninView.as_view(),name="signin"),
+    path("",views.SigninView.as_view(),name="signin"),
     path("linksphere/index",views.IndexView.as_view(),name="index"),
     path("linksphere/signout",views.SignoutView.as_view(),name="signout"),
     path("linksphere/profile-edit/<int:pk>/change",views.ProfileUpdateView.as_view(),name="profile-update"),
@@ -32,4 +32,6 @@ urlpatterns = [
     path("linksphere/profile/<int:pk>/follow",views.FollowView.as_view(),name="follow"),
     path("linksphere/<int:pk>/like",views.PostLikeView.as_view(),name="like"),
     path("linksphere/post/<int:pk>/comment/add",views.CommentView.as_view(),name="comment"),
+    path("linksphere/profile/<int:pk>/block",views.ProfileBlockView.as_view(),name="block"),
+    path("linksphere/story/add",views.StoryCreateView.as_view(),name="story_create"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
