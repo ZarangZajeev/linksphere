@@ -1,28 +1,22 @@
 from typing import Any
+
 from django.db.models.query import QuerySet
 from django.forms.models import BaseModelForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.views.generic import View, FormView, CreateView, TemplateView, UpdateView, DetailView,ListView
-from social.form import RegistrationForm, LoginForm, UserProfileForm,PostForm,CommentForm,StoryForm
+from django.views.generic import View, FormView, CreateView, TemplateView, UpdateView, DetailView,ListView,DeleteView
 from django.urls import reverse
 from django.contrib.auth import authenticate,login,logout
-from social.models import UserProfile,Posts,Comments
 from django.contrib import messages
+from django.utils import timezone
 from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 
-# Create your views here.
-# def signin_required(fn):
-#     def wrapper(request,*args,**kwargs):
-#         if not request.user.is_autheticated:
-#             messages.error(request,"Please login")
-#             return redirect("signin")
-#         else:
-#             return fn(request,*args,**kwargs)
-#     return wrapper
+from social.form import RegistrationForm, LoginForm, UserProfileForm,PostForm,CommentForm,StoryForm
+from social.models import UserProfile,Posts,Comments,Stories
+from social.decorators import login_required
 
-
-
+decs=[login_required, never_cache]
 
 class SignUpView(CreateView):
     template_name="register.html"
@@ -39,6 +33,7 @@ class SignUpView(CreateView):
     #     else:
     #         return render(request,"register.html",{"from":form})
 
+
 class SigninView(FormView):
     template_name="login.html"
     form_class=LoginForm
@@ -54,9 +49,10 @@ class SigninView(FormView):
                 print("Login successfully")
                 return redirect("index")
         print("Failed to login")
+        messages.error(request,"Password or username incorrect")
         return render(request,"login.html",{"form":form})
     
-# @method_decorator(signin_required,name="dispatch")
+@method_decorator(decs,name="dispatch")
 class IndexView(CreateView,ListView):
     template_name="index.html"
     form_class=PostForm
@@ -77,14 +73,19 @@ class IndexView(CreateView,ListView):
         qs=Posts.objects.all().exclude(user__id__in=blockedprofile_id).order_by("-created_date")
         return qs
     
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        current_date=timezone.now()
+        context["stories"]=Stories.objects.filter(expiry_date__gte=current_date)
+        return context
 
-# @method_decorator(signin_required,name="dispatch")
+@method_decorator(decs,name="dispatch")
 class SignoutView(View):
     def get(self,request,*args,**kwargs):
         logout(request)
         return redirect("signin")
     
-# @method_decorator(signin_required,name="dispatch")
+@method_decorator(decs,name="dispatch")
 class ProfileUpdateView(UpdateView):
     template_name="profile_edit.html"
     form_class=UserProfileForm
@@ -93,7 +94,7 @@ class ProfileUpdateView(UpdateView):
     def get_success_url(self):
         return reverse("index")
     
-# @method_decorator(signin_required,name="dispatch")
+@method_decorator(decs,name="dispatch")
 class ProfileDetailView(DetailView):
     template_name="profile.html"
     model=UserProfile
@@ -109,11 +110,13 @@ class ProfileDetailView(DetailView):
     #         request.user.profile.following.remove(profile_object)
     #     return redirect("profile")
 
+@method_decorator(decs,name="dispatch")
 class ProfileListView(View):
     def get(self, request, *args,**kwargs):
         qs=UserProfile.objects.all().exclude(user=request.user)
         return render(request,"profile_list.html",{"data":qs})
     
+@method_decorator(decs,name="dispatch")
 class FollowView(View):
     def post(self,request,*args,**kwargs):
         id=kwargs.get("pk")
@@ -124,7 +127,8 @@ class FollowView(View):
         elif action=="unfollow":
             request.user.profile.following.remove(profile_object)
         return redirect("profile-list")
-    
+
+@method_decorator(decs,name="dispatch")
 class PostLikeView(View):
     def post(self,request,*args,**kwargs):
         id=kwargs.get("pk")
@@ -136,6 +140,7 @@ class PostLikeView(View):
             post_object.liked_by.remove(request.user)
         return redirect("index")
     
+@method_decorator(decs,name="dispatch")
 class CommentView(CreateView,ListView):
     template_name="index.html"
     form_class=CommentForm
@@ -152,6 +157,7 @@ class CommentView(CreateView,ListView):
         form.instance.post=post_object
         return super().form_valid(form)
     
+@method_decorator(decs,name="dispatch")
 class ProfileBlockView(View):
     def post(self,request,*args,**kwargs):
         id=kwargs.get("pk")
@@ -163,6 +169,7 @@ class ProfileBlockView(View):
             request.user.profile.block.remove(profile_object)
         return redirect("index")
 
+@method_decorator(decs,name="dispatch")
 class StoryCreateView(View):
     def post(self,request,*args,**kwargs):
         form=StoryForm(request.POST,files=request.FILES)
@@ -171,3 +178,5 @@ class StoryCreateView(View):
             form.save()
             return redirect("index")
         return redirect("index")
+    
+

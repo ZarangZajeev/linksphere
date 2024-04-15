@@ -31,22 +31,63 @@
                 </div>
             </div>
         </form>
-        <!-- =====post add start -->
-
+        <!-- =====post add end -->
+        <div class="d-flex container w-50 mt-3 mb-3">
+            {%for st in stories%}
+                <div class="d-flex flex-column">
+                    <div class="me-3">
+                        <article class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center" style="height: 50px; width: 50px;">
+                            <!-- {{st}} -->
+                            
+                            <!-- {%if st.post_image%} -->
+                                <button class="btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                    <img src="{{st.post_image.url}}" alt="" class="rounded-circle" style="height: 50px; width: 50px;">
+                                </button>
+                            <!-- {%else%}
+                                <div>{{st.title}}</div>
+                            {%endif%} -->
+                        </article>
+                        <div class="text-center">
+                            <span class="spa">{{st.user}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Story</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <img src="{{st.post_image.url}}" alt="" class="w-100">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Understood</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            {%endfor%}
+        </div>
 
         <!-- post section start -->
         {%for post in data%}
 
         <div class="rounded-4 mt-2 mb-3 w-50 bg-secondary bg-opacity-10">
-            <div class="ms-2 mt-2 mb-2">
-                {%if post.user.profile.profile_pic%}
-                    <img class="profile-small" src="{{post.user.profile.profile_pic.url}}" alt="Avatar">
-                {%else%}
-                    <img class="profile-small" src="{%static 'socialapp/images/profilepic.png'%}" alt="Avatar">
-                {%endif%}
-
-                <span class="fw-bold">{{post.user}}</span>,<span class="date"> {{post.created_date}}</span>
-
+            <div class="ms-2 mt-2 mb-2 d-flex">
+                <div>
+                    <a class="text-decoration-none" href="{%url 'profile' user.id%}">
+                        {%if post.user.profile.profile_pic%}
+                            <img class="profile-small" src="{{post.user.profile.profile_pic.url}}" alt="Avatar">
+                        {%else%}
+                            <img class="profile-small" src="{%static 'socialapp/images/profilepic.png'%}" alt="Avatar">
+                        {%endif%}
+                    </a>
+                    <a class="text-decoration-none text-dark" href="{%url 'profile' user.id%}"><span class="fw-bold">{{post.user}}</span></a>,<span class="date"> {{post.created_date}}</span>
+                </div>
             </div>
             <div>
                 {%if post.post_image%}
